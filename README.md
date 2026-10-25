@@ -1,5 +1,4 @@
-# MorseFinder
+# MorseFinder (native Android)
 
-Morse decoder (audio beeps + camera light). Web app in `www/`, packaged for Android with Capacitor.
-
-APK: GitHub → Actions → "Build Android APK" → artifact `MorseFinder-apk`, or Releases → `latest`.
+Kotlin + Jetpack Compose. Decodes Morse from sound (AudioRecord + FFT) and from blinking light (CameraX).
+APK is built by GitHub Actions: Actions → "Build Android APK" → artifact, or Releases → `latest`.

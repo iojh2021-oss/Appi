@@ -1,7 +1,0 @@
-{
-  "appId": "com.morsefinder.app",
-  "appName": "MorseFinder",
-  "webDir": "www",
-  "server": { "androidScheme": "https" },
-  "android": { "backgroundColor": "#0F1F2B" }
-}
