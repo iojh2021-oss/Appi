@@ -38,7 +38,16 @@ jobs:
           test "$(stat -c%s app/src/main/assets/hand_landmarker.task)" -gt 5000000
 
       - name: Build APK
-        run: gradle assembleRelease --no-daemon --stacktrace
+        run: |
+          set -o pipefail
+          gradle assembleRelease --no-daemon --stacktrace 2>&1 | tee build.log
+
+      - name: Show build errors
+        if: failure()
+        run: |
+          { grep -E "^e: " build.log | head -30; grep -A5 "What went wrong" build.log | head -14; } > errors.txt || true
+          { echo '### Build errors'; echo '```'; cat errors.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          head -10 errors.txt | while IFS= read -r line; do echo "::error::${line}"; done
 
       - name: Rename APK
         run: cp app/build/outputs/apk/release/app-release.apk MorseFinder.apk

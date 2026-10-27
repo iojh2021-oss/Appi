@@ -275,7 +275,7 @@ fun SignScreen(vm: SignViewModel) {
                 }
                 SCard {
                     Text("متن", color = Pal.muted, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-                    CompositionLocalProvider(LocalLayoutDirection provides if (ui.pack == "fa") LayoutDirection.Rtl else LayoutDirection.Ltr) {
+                    CompositionLocalProvider(LocalLayoutDirection provides (if (ui.pack == "fa") LayoutDirection.Rtl else LayoutDirection.Ltr)) {
                         Text(
                             if (ui.text.isEmpty()) "…" else ui.text, color = Pal.text, fontSize = 28.sp, lineHeight = 38.sp,
                             modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp)
