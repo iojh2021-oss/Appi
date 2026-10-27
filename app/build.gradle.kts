@@ -28,6 +28,7 @@ android {
     }
     kotlinOptions { jvmTarget = "17" }
     buildFeatures { compose = true }
+    androidResources { noCompress += "task" }
     lint { abortOnError = false; checkReleaseBuilds = false }
     composeOptions { kotlinCompilerExtensionVersion = "1.5.14" }
     packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
@@ -48,6 +49,8 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
 
     implementation("androidx.annotation:annotation-experimental:1.4.1")
+
+    implementation("com.google.mediapipe:tasks-vision:0.10.18")
 
     val camerax = "1.3.4"
     implementation("androidx.camera:camera-core:$camerax")

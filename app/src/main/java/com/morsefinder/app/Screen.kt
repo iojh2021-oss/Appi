@@ -101,7 +101,6 @@ fun MorseApp(vm: MorseViewModel) {
                 .fillMaxSize()
                 .background(Pal.bg)
                 .statusBarsPadding()
-                .navigationBarsPadding()
                 .verticalScroll(rememberScrollState())
                 .padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)

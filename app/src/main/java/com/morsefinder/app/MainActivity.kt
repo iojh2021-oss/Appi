@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 
 class MainActivity : ComponentActivity() {
     private val vm: MorseViewModel by viewModels()
+    private val signVm: SignViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,11 +19,12 @@ class MainActivity : ComponentActivity() {
             statusBarStyle = SystemBarStyle.dark(bg),
             navigationBarStyle = SystemBarStyle.dark(bg)
         )
-        setContent { MorseTheme { MorseApp(vm) } }
+        setContent { MorseTheme { AppRoot(vm, signVm) } }
     }
 
     override fun onStop() {
         vm.stop()
+        signVm.stop()
         super.onStop()
     }
 }
