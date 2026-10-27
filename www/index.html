@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0A1B27">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="قطب‌نمای دقیق با جهت قبله. بدون اینترنت هم کار می‌کند.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>قطب‌نما</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header class="bar">
+      <h1>قطب‌نما</h1>
+      <div class="bar-actions">
+        <button id="btnInstall" class="btn small" type="button" hidden>نصب برنامه</button>
+        <a id="btnSky" class="icon-btn" href="./sky.html" aria-label="آسمان‌نما">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 16l.7 1.8 1.8.7-1.8.7L19 21l-.7-1.8-1.8-.7 1.8-.7z"/></svg>
+        </a>
+        <button id="btnCalib" class="icon-btn" type="button" aria-label="راهنمای کالیبراسیون">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 12c-2.2-3-4-5-6.5-5a5 5 0 1 0 0 10c2.5 0 4.3-2 6.5-5s4-5 6.5-5a5 5 0 1 1 0 10c-2.5 0-4.3-2-6.5-5z"/></svg>
+        </button>
+        <button id="btnSettings" class="icon-btn" type="button" aria-label="تنظیمات">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <section class="stage" aria-label="قطب‌نما">
+      <div class="dial-wrap">
+        <svg id="dialSvg" viewBox="-205 -205 410 410" role="img" aria-label="صفحه قطب‌نما">
+          <circle class="face" r="196"/>
+          <g id="dial"></g>
+          <circle class="well" r="70"/>
+          <path class="lubber" d="M-9 -204 L9 -204 L0 -186 Z"/>
+        </svg>
+        <div class="readout" aria-live="off">
+          <div class="deg"><span id="degValue">--</span><span class="unit">°</span></div>
+          <div class="dir" id="dirName">در انتظار سنسور</div>
+        </div>
+      </div>
+      <p id="status" class="status" role="status" hidden></p>
+    </section>
+
+    <section id="panel" class="panel" aria-live="polite">
+      <div class="q-head">
+        <span class="q-label"><span class="q-dot" aria-hidden="true"></span>قبله</span>
+        <span class="q-value" id="qValue">--</span>
+      </div>
+      <p class="q-guide" id="qGuide">برای نمایش جهت قبله، یک‌بار موقعیت مکانی را تعیین کنید.</p>
+      <p class="q-meta" id="qMeta" hidden></p>
+      <button id="btnLocate" class="btn primary" type="button">تعیین موقعیت من</button>
+    </section>
+  </main>
+
+  <div id="overlay" class="overlay" hidden>
+    <div class="overlay-card" role="alertdialog" aria-labelledby="ovTitle" aria-describedby="ovText">
+      <svg class="overlay-icon" viewBox="-50 -50 100 100" aria-hidden="true">
+        <circle r="44" fill="none" stroke="#24485F" stroke-width="3"/>
+        <path d="M0 -34 L8 0 L-8 0 Z" fill="#FF5B3A"/>
+        <path d="M0 34 L8 0 L-8 0 Z" fill="#EDF0E4"/>
+        <circle r="3" fill="#0A1B27"/>
+      </svg>
+      <h2 id="ovTitle">قطب‌نما</h2>
+      <p id="ovText">برای استفاده از سنسور جهت، دسترسی لازم است.</p>
+      <button id="btnStart" class="btn primary" type="button">شروع</button>
+    </div>
+  </div>
+
+  <dialog id="dlgSettings" class="dlg">
+    <h2>تنظیمات</h2>
+    <label class="field" for="inDecl">
+      <span class="field-title">انحراف مغناطیسی (درجه)</span>
+      <input id="inDecl" type="number" inputmode="decimal" min="-40" max="40" step="0.5" value="0">
+      <span class="field-help">سنسور گوشی شمال مغناطیسی را نشان می‌دهد. برای رسیدن به شمال جغرافیایی و قبله دقیق‌تر، انحراف منطقه‌تان را وارد کنید (شرقی مثبت). در بیشتر نقاط ایران حدود ۴ تا ۶ درجه شرقی است.</span>
+    </label>
+    <label class="check" for="inVib">
+      <input id="inVib" type="checkbox">
+      <span>لرزش هنگام رو به قبله بودن</span>
+    </label>
+    <form method="dialog" class="dlg-actions">
+      <button id="btnReset" class="btn" type="button">بازنشانی</button>
+      <button class="btn primary">بستن</button>
+    </form>
+  </dialog>
+
+  <dialog id="dlgCalib" class="dlg">
+    <h2>کالیبراسیون</h2>
+    <svg class="figure8" viewBox="-110 -70 220 140" aria-hidden="true">
+      <path d="M0 0 C40 -50 90 -50 90 0 C90 50 40 50 0 0 C-40 -50 -90 -50 -90 0 C-90 50 -40 50 0 0 Z" fill="none" stroke="#24485F" stroke-width="3"/>
+      <circle r="7" fill="#E6B94A">
+        <animateMotion dur="4s" repeatCount="indefinite" path="M0 0 C40 -50 90 -50 90 0 C90 50 40 50 0 0 C-40 -50 -90 -50 -90 0 C-90 50 -40 50 0 0 Z"/>
+      </circle>
+    </svg>
+    <p>گوشی را در هوا نگه دارید و چند بار به شکل عدد ۸ انگلیسی بچرخانید. این کار مغناطیس‌سنج را دوباره تنظیم می‌کند.</p>
+    <p>از آهنربا، قاب مغناطیسی، بلندگو و اجسام فلزی بزرگ دور بمانید؛ نزدیک آن‌ها جهت اشتباه می‌شود.</p>
+    <form method="dialog" class="dlg-actions">
+      <button class="btn primary">متوجه شدم</button>
+    </form>
+  </dialog>
+
+  <script src="math.js" defer></script>
+  <script src="app.js" defer></script>
+</body>
+</html>
