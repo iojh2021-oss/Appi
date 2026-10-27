@@ -19,7 +19,11 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - uses: android-actions/setup-android@v3
+      # The runner already ships the Android SDK; just make sure licenses are accepted.
+      - name: Accept Android SDK licenses
+        run: |
+          SDKM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          if [ -x "$SDKM" ]; then yes | "$SDKM" --licenses > /dev/null || true; fi
 
       - uses: gradle/actions/setup-gradle@v4
         with:
