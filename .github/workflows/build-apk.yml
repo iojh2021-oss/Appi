@@ -37,6 +37,12 @@ jobs:
           ls -l app/src/main/assets/hand_landmarker.task
           test "$(stat -c%s app/src/main/assets/hand_landmarker.task)" -gt 5000000
 
+      - name: Unit tests (DSP decoder + post-quantum crypto)
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          gradle testDebugUnitTest --no-daemon 2>&1 | tee test.log | tail -40
+
       - name: Build APK
         run: |
           set -o pipefail

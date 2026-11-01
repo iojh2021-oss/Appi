@@ -31,7 +31,7 @@ android {
     androidResources { noCompress += "task" }
     lint { abortOnError = false; checkReleaseBuilds = false }
     composeOptions { kotlinCompilerExtensionVersion = "1.5.14" }
-    packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
+    packaging { resources { excludes += listOf("/META-INF/{AL2.0,LGPL2.1}", "META-INF/versions/9/OSGI-INF/MANIFEST.MF") } }
 }
 
 dependencies {
@@ -51,6 +51,11 @@ dependencies {
     implementation("androidx.annotation:annotation-experimental:1.4.1")
 
     implementation("com.google.mediapipe:tasks-vision:0.10.18")
+
+    // Post-quantum crypto (ML-KEM / ML-DSA, FIPS 203/204 final names are available from 1.79 on)
+    implementation("org.bouncycastle:bcprov-jdk18on:1.80")
+
+    testImplementation("junit:junit:4.13.2")
 
     val camerax = "1.3.4"
     implementation("androidx.camera:camera-core:$camerax")

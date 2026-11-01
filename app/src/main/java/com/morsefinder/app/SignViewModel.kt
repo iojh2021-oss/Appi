@@ -189,15 +189,47 @@ class SignViewModel(app: Application) : AndroidViewModel(app) {
 
     fun exportFile(): File = store.exportFile()
 
+    // ---- post-quantum sealed packs ----
+    private val pq by lazy { PqStore(getApplication()) }
+
+    /** My public key file (ML-KEM-768 + X25519 + ML-DSA-65) to send to someone who wants to share a pack with me. */
+    fun pqMyKeyFile(): File? = try { pq.publicKeyFile() } catch (e: Exception) { message("رمزنگاری پسا‌کوانتومی روی این دستگاه در دسترس نیست"); null }
+
+    fun pqMyFingerprint(): String? = try { pq.myFingerprint() } catch (e: Exception) { null }
+
+    /** Pack encrypted for the imported recipient key and signed with my ML-DSA key. */
+    fun pqSealedFile(): File? {
+        return try {
+            if (pq.recipient() == null) { message("اول فایل کلید گیرنده را با «ورود نمونه‌ها» وارد کن"); return null }
+            val f = pq.sealFor(store.exportBytes())
+            if (f == null) message("کلید گیرنده معتبر نیست")
+            f
+        } catch (e: Exception) { message("ساخت بستهٔ رمزنگاری‌شده انجام نشد"); null }
+    }
+
     fun importFrom(uri: Uri) {
         viewModelScope.launch {
             try {
-                val text = getApplication<Application>().contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() }
+                val bytes = getApplication<Application>().contentResolver.openInputStream(uri)?.use { it.readBytes() }
                     ?: throw IllegalStateException()
-                val n = store.importText(text)
-                refreshCounts()
-                message("$n نمونه وارد شد")
-            } catch (e: Exception) { message("فایل معتبر نبود") }
+                when {
+                    PqCrypto.isPublicKeyFile(bytes) -> {
+                        val fp = pq.setRecipient(bytes)
+                        message("کلید گیرنده ذخیره شد ✓  $fp")
+                    }
+                    PqCrypto.isSealedPack(bytes) -> {
+                        val o = pq.open(bytes)                       // verifies ML-DSA signature, then decrypts
+                        val n = store.importText(String(o.plain, Charsets.UTF_8))
+                        refreshCounts()
+                        message("$n نمونه وارد شد ✓ امضا معتبر — فرستنده: ${o.sender.fingerprint()}")
+                    }
+                    else -> {
+                        val n = store.importText(String(bytes, Charsets.UTF_8))
+                        refreshCounts()
+                        message("$n نمونه وارد شد")
+                    }
+                }
+            } catch (e: Exception) { message("فایل معتبر نبود یا امضا/رمز درست نبود") }
         }
     }
 

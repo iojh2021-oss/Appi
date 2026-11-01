@@ -20,7 +20,7 @@ class SampleStore(private val ctx: Context) {
     fun load() {
         base.clear(); user.clear()
         try { ctx.assets.open("packs/base.json").bufferedReader().use { parseInto(it.readText(), base) } } catch (e: Exception) { }
-        try { if (file.exists()) parseInto(file.readText(), user) } catch (e: Exception) { }
+        try { if (file.exists()) parseInto(KeyVault.readText(file), user) } catch (e: Exception) { }
         rebuild()
     }
 
@@ -70,6 +70,8 @@ class SampleStore(private val ctx: Context) {
         return n
     }
 
+    @Synchronized fun exportBytes(): ByteArray = toJson(user).toByteArray(Charsets.UTF_8)
+
     @Synchronized
     fun exportFile(): File {
         val f = File(ctx.cacheDir, "sign_pack.json")
@@ -77,7 +79,7 @@ class SampleStore(private val ctx: Context) {
         return f
     }
 
-    private fun save() { try { file.writeText(toJson(user)) } catch (e: Exception) { } }
+    private fun save() { try { KeyVault.writeText(file, toJson(user)) } catch (e: Exception) { } }
 
     private fun toJson(m: Map<String, List<FloatArray>>): String {
         val sb = StringBuilder("{")

@@ -366,6 +366,32 @@ fun SignScreen(vm: SignViewModel) {
                             Icon(Icons.Filled.Download, null, Modifier.size(18.dp)); Text("  ورود نمونه‌ها")
                         }
                     }
+                    Text("رمزنگاری پسا‌کوانتومی (ML-KEM-768 + X25519 + AES-256 + امضای ML-DSA-65)",
+                        color = Pal.muted, fontSize = 12.sp, lineHeight = 19.sp, modifier = Modifier.padding(top = 10.dp))
+                    Row(Modifier.padding(top = 6.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedButton(onClick = {
+                            val f = vm.pqMyKeyFile()
+                            if (f != null) try {
+                                val uri = FileProvider.getUriForFile(ctx, ctx.packageName + ".files", f)
+                                val send = Intent(Intent.ACTION_SEND).apply {
+                                    type = "application/octet-stream"; putExtra(Intent.EXTRA_STREAM, uri)
+                                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                }
+                                ctx.startActivity(Intent.createChooser(send, "ارسال کلید عمومی من"))
+                            } catch (e: Exception) { vm.message("ارسال انجام نشد") }
+                        }) { Text("کلید من") }
+                        OutlinedButton(onClick = {
+                            val f = vm.pqSealedFile()
+                            if (f != null) try {
+                                val uri = FileProvider.getUriForFile(ctx, ctx.packageName + ".files", f)
+                                val send = Intent(Intent.ACTION_SEND).apply {
+                                    type = "application/octet-stream"; putExtra(Intent.EXTRA_STREAM, uri)
+                                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                }
+                                ctx.startActivity(Intent.createChooser(send, "ارسال بستهٔ رمزنگاری‌شده"))
+                            } catch (e: Exception) { vm.message("ارسال انجام نشد") }
+                        }) { Text("خروجی رمزنگاری‌شده") }
+                    }
                 }
             }
         }
