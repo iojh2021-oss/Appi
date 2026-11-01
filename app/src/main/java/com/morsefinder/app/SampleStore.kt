@@ -118,7 +118,7 @@ object Knn {
     fun centroid(list: List<FloatArray>): FloatArray {
         val c = FloatArray(63)
         for (a in list) for (i in 0 until 63) c[i] += a[i]
-        for (i in 0 until 63) c[i] /= list.size
+        for (i in 0 until 63) c[i] = c[i] / list.size.toFloat()
         return c
     }
 
